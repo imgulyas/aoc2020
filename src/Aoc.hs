@@ -54,10 +54,22 @@ checkEntry (PasswordEntry lower upper c password) =
       count = length $ filter (== c) password
    in lower <= count && count <= upper
 
+checkEntry2 :: PasswordEntry -> Bool
+checkEntry2 (PasswordEntry fstPos sndPos c password) =
+  let xxor :: Bool -> Bool -> Bool
+      xxor True False = True
+      xxor False True = True
+      xxor _ _ = False
+   in xxor (Just c == password !!? (fstPos -1)) (Just c == password !!? (sndPos -1))
+
 day2 :: [Text] -> IO ()
 day2 input = do
   let parseEntry = parse passwordEntryParser ""
   let parsedEntries = sequence $ parseEntry <$> input
   case parsedEntries of
-    Right entries -> print . length . filter (== True) $ checkEntry <$> entries
+    Right entries -> do
+      let solution1 = length . filter checkEntry $ entries
+      print solution1
+      let solution2 = length . filter checkEntry2 $ entries
+      print solution2
     Left e -> error $ show e
