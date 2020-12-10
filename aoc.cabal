@@ -49,6 +49,7 @@ library
   hs-source-dirs:      src
   exposed-modules:     Aoc
   default-extensions:  OverloadedStrings
+  build-depends:       parsec
 
 executable aoc
   import:              common-options

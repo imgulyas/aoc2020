@@ -1,21 +1,28 @@
 module Main (main) where
 
-import Aoc (day1)
+import Aoc
 import System.Environment
 
-getInputList :: IO [Int]
+getInputList :: IO [Text]
 getInputList = do
   args <- getArgs
   let maybeInputPath = head <$> nonEmpty args
   let path = case maybeInputPath of
         Just p -> p
         Nothing -> error "No input file"
-  content <- readFileText path
-  let maybeInts = readMaybe . toString <$> lines content :: [Maybe Int]
+  lines <$> readFileText path
+
+getNumberList :: IO [Int]
+getNumberList = do
+  input <- getInputList
+  let maybeInts = readMaybe . toString <$> input :: [Maybe Int]
   pure $ catMaybes maybeInts
 
 solveDay1 :: IO ()
-solveDay1 = getInputList >>= day1
+solveDay1 = getNumberList >>= day1
+
+solveDay2 :: IO ()
+solveDay2 = getInputList >>= day2
 
 main :: IO ()
-main = solveDay1
+main = solveDay2
