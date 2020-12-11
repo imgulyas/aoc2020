@@ -7,6 +7,7 @@
 module Aoc
   ( day1,
     day2,
+    day3,
   )
 where
 
@@ -73,3 +74,16 @@ day2 input = do
       let solution2 = length . filter checkEntry2 $ entries
       print solution2
     Left e -> error $ show e
+
+countTrees :: [[Char]] -> Int
+countTrees [] = 0
+countTrees (level : rest) = isHeadTree + countTrees (drop 3 <$> rest)
+  where
+    isHeadTree :: Int
+    isHeadTree = bool 0 1 $ level !!? 0 == Just '#'
+
+day3 :: [Text] -> IO ()
+day3 input = do
+  let slideMap = cycle . toString <$> input
+  let solution1 = countTrees slideMap
+  print solution1
