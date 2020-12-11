@@ -75,15 +75,20 @@ day2 input = do
       print solution2
     Left e -> error $ show e
 
-countTrees :: [[Char]] -> Int
-countTrees [] = 0
-countTrees (level : rest) = isHeadTree + countTrees (drop 3 <$> rest)
+parametricCT :: Int -> Int -> [[Char]] -> Int
+parametricCT right down = go
   where
-    isHeadTree :: Int
-    isHeadTree = bool 0 1 $ level !!? 0 == Just '#'
+    go [] = 0
+    go (level : rest) = isHeadTree + go (drop right <$> drop (down -1) rest)
+      where
+        isHeadTree :: Int
+        isHeadTree = bool 0 1 $ level !!? 0 == Just '#'
 
 day3 :: [Text] -> IO ()
 day3 input = do
   let slideMap = cycle . toString <$> input
-  let solution1 = countTrees slideMap
+  let solution1 = parametricCT 3 1 slideMap
+  let task2params = [(1, 1), (3, 1), (5, 1), (7, 1), (1, 2)]
+  let solution2 = product $ (\(r, d) -> parametricCT r d slideMap) <$> task2params
   print solution1
+  print solution2
