@@ -21,10 +21,10 @@ source-repository head
 
 common common-options
   build-depends:       base ^>= 4.13.0.0
-                     , relude
+                     , text
   
   mixins:              base hiding (Prelude)
-                     , relude (Relude as Prelude)
+                     , relude (Relude as Prelude, Relude.Extra.Map)
   
   ghc-options:         -Wall
                        -Wcompat
@@ -50,12 +50,15 @@ library
   exposed-modules:     Aoc
   default-extensions:  OverloadedStrings
   build-depends:       parsec
+                     , relude
+
 
 executable aoc
   import:              common-options
   hs-source-dirs:      app
   main-is:             Main.hs
   build-depends:       aoc
+                     , relude
   default-extensions:  OverloadedStrings
   ghc-options:         -threaded
                        -rtsopts

@@ -27,5 +27,8 @@ solveDay2 = getInputList >>= day2
 solveDay3 :: IO ()
 solveDay3 = getInputList >>= day3
 
+solveDay4 :: IO ()
+solveDay4 = getInputList >>= day4
+
 main :: IO ()
-main = solveDay3
+main = solveDay4

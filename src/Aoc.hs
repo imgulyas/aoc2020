@@ -8,9 +8,12 @@ module Aoc
   ( day1,
     day2,
     day3,
+    day4,
   )
 where
 
+import Data.Text (split)
+import Relude.Extra.Map
 import Text.Parsec
 
 day1 :: [Int] -> IO ()
@@ -92,3 +95,36 @@ day3 input = do
   let solution2 = product $ (\(r, d) -> parametricCT r d slideMap) <$> task2params
   print solution1
   print solution2
+
+joinBlocks :: [Text] -> [Text]
+joinBlocks [] = []
+joinBlocks [""] = []
+joinBlocks [ne] = [ne]
+joinBlocks ("" : rest) = joinBlocks rest
+joinBlocks (ne : "" : rest) = ne : joinBlocks rest
+joinBlocks (ne : ne2 : rest) = joinBlocks $ (ne <> " " <> ne2) : rest
+
+parseBlocks :: [Text] -> [Map Text Text]
+parseBlocks blocks =
+  let tuplify :: [Text] -> Maybe (Text, Text)
+      tuplify [t1, t2] = Just (t1, t2)
+      tuplify _ = Nothing
+
+      blockToPairs :: Text -> [Maybe (Text, Text)]
+      blockToPairs block = tuplify . take 2 . split (== ':') <$> words block
+
+      mapFromPairs :: [Maybe (Text, Text)] -> Map Text Text
+      mapFromPairs maybes = fromList . catMaybes $maybes
+   in mapFromPairs . blockToPairs <$> blocks
+
+passportFields :: [Text]
+passportFields = ["byr", "iyr", "eyr", "hgt", "hcl", "ecl", "pid", "cid"]
+
+validDocument :: Map Text Text -> Bool
+validDocument doc = and $ (\k -> member k doc) <$> take 7 passportFields
+
+day4 :: [Text] -> IO ()
+day4 input = do
+  let docs = parseBlocks . joinBlocks $ input
+  let solution1 = length . filter validDocument $ docs
+  print solution1
